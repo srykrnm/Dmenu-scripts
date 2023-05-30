@@ -1,0 +1,43 @@
+#!/bin/bash
+
+### VARIABLES ###
+
+font="SourceCodeVF:style=Semibold:pixelsize=12:antialias=true"
+nb="black"
+sb="#646464"
+lines=10
+border_width=2
+line_height=20
+prompt="Exit-Menu"
+DMENU="dmenu -i -fn $font -nb $nb -sb $sb -l $lines -bw $border_width -h $line_height -p $prompt" 
+
+
+### MAIN-FUNCTION ###
+
+main() {
+    choice=`echo -e "Shutdown\nRestart\nLogout\nSuspend\nLock" | $DMENU`
+    if [ ${#choice} == 0 ]; then
+        exit
+    fi
+    case $choice in 
+        Shutdown)
+            systemctl poweroff;;
+        Restart)
+            systemctl reboot;;
+        Logout)
+            loginctl terminate-user $USER;;
+        Suspend)
+            systemctl suspend;;
+        Lock)
+            sleep 0.15
+            lock;;
+        *)
+            dunstify "Exit menu" "input error" -i $HOME/Icons/user.png -u low
+    esac
+}
+
+### MAIN ###
+
+main
+
+### END ###

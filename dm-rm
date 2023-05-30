@@ -1,0 +1,54 @@
+#!/bin/bash
+
+### VARIABLES ###
+
+font="SourceCodeVF:style=Semibold:pixelsize=12:antialias=true"
+nb="black"
+sb="#646464"
+lines=10
+border_width=2
+line_height=20
+prompt="Removable-Disks"
+DMENU="dmenu -i -fn $font -nb $nb -sb $sb -l $lines -bw $border_width -h $line_height -p $prompt"
+usb_port_count=3
+
+### MAIN-FUNCTION ###
+
+main() {
+    disks_info=`lsblk | awk '{ print $1,$3,$6,$7 }' | grep '1 disk'`
+    num_usb_connected=`lsblk | awk '{ print $1,$3,$6 }' | grep '1 disk' | wc -l`
+    if [ "$num_usb_connected" != 0 ]; then
+        dmenu_in=`echo $disks_info | awk '{ print $1,$4 }' | $DMENU`
+        dm=`echo $dmenu_in | awk '{print $1}'`
+        mountpoint=`lsblk | awk '{ print $1,$3,$6,$7 }' | grep "$dm 1 disk" | awk '{print $4}'`
+        if [ "${#dm}" != 0 ] && [ "${#mountpoint}" == 0 ]; then
+            i=1
+            while [ $i -le $usb_port_count ];
+            do
+                mountpoint_free_qn=`lsblk | awk '{ print $1,$3,$6,$7 }' | grep "1 disk" | awk '{print $4}' | grep "/mnt/usb$i" | wc -l`
+                if [ "$mountpoint_free_qn" == 0 ]; then
+                    sudo mount /dev/$dm /mnt/usb$i
+                    ln -s /mnt/usb$i $HOME/usb$i
+                    dunstify "REMOVABLE DISKS" "Succesfully mounted /dev/$dm\nCreated link -> $HOME/usb$i" -r 1209 -u low -i $HOME/Icons/usb.png
+                    break
+                fi
+                ((i++))
+            done
+        elif [ "${#dm}" != 0 ] && [ "$mountpoint" != 0 ]; then
+            sudo umount -l $mountpoint
+            linkname=`echo $mountpoint | cut -d '/' -f3`
+            rm $HOME/$linkname
+            dunstify "REMOVABLE DISKS" "succesfully unmounted /dev/$dm\nLinks Deleted." -r 1209 -u low -i $HOME/Icons/usb.png
+        else
+            echo "mainit"
+        fi
+    else
+        dunstify "REMOVABLE DISKS" "No Removable Disks Connected!" -r 1209 -u low -i $HOME/Icons/usb.png
+    fi
+}
+
+### MAIN ###
+
+main
+
+### END ###

@@ -1,0 +1,33 @@
+#!/bin/bash
+
+### VARIABLES ###
+
+font="SourceCodeVF:style=Semibold:pixelsize=12:antialias=true"
+nb="black"
+sb="#646464"
+lines=10
+border_width=2
+line_height=20
+prompt="Kill-Programs"
+DMENU="dmenu -i -fn $font -nb $nb -sb $sb -l $lines -bw $border_width -h $line_height -p $prompt"
+
+### MAIN-FUNCTION ###
+
+main() { 
+    selected_with_pid=`ps -a -u $USER | $DMENU` 
+    if [ ! -z "$selected_with_pid" ]; then
+        selected=`echo $selected_with_pid | awk '{print $2}'`
+        answer=`echo -e "Yes\nNo" | $@`
+        if [ "$answer" == "Yes" ]; then
+            selpid="$(awk '{print $1}' <<< $selected_with_pid)";
+            kill -9 $selpid
+        fi
+    fi
+    exit 0
+}
+
+### MAIN ###
+
+main
+
+### END ###

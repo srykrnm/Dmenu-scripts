@@ -1,0 +1,28 @@
+#!/bin/bash
+
+### VARIABLES ###
+
+font="SourceCodeVF:style=Semibold:pixelsize=12:antialias=true"
+nb="black"
+sb="#646464"
+lines=10
+border_width=2
+line_height=20
+prompt="Exit menu"
+DMENU="dmenu -i -fn $font -nb $nb -sb $sb -l $lines -bw $border_width -h $line_height -p $prompt"
+
+### MAIN-FUNTION ###
+
+main() {
+    dm=`wmctrl -d | awk '{print $9}' | $DMENU`
+    if [ "${#dm}" != 0 ]; then
+	    wrkspnum=`wmctrl -d | grep "$dm" | awk '{print $1}'`
+	    wmctrl -s $wrkspnum
+    fi
+}
+
+### MAIN ###
+
+main          
+
+### END ###

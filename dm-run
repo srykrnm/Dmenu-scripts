@@ -1,0 +1,24 @@
+#!/bin/bash
+
+### VARIABLES ###
+
+font="SourceCodeVF:style=Semibold:pixelsize=12:antialias=true"
+nb="black"
+sb="#646464"
+lines=10
+border_width=2
+line_height=20
+prompt="Executables"
+DMENU="dmenu -i -fn $font -nb $nb -sb $sb -l $lines -bw $border_width -h $line_height -p $prompt"
+
+### MAIN-FUNCTION ###
+
+main() {
+    $(dmenu_path | $DMENU)
+}
+
+### MAIN ###
+
+main
+
+### END ###
