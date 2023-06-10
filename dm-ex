@@ -2,14 +2,14 @@
 
 ### VARIABLES ###
 
-font="SourceCodeVF:style=Semibold:pixelsize=12:antialias=true"
+font="SourceCodeVF:style=Semibold:pixelsize=13:antialias=true"
 nb="black"
 sb="#646464"
-lines=10
+lines=5
 border_width=2
-line_height=20
-prompt="Exit-Menu"
-DMENU="dmenu -i -fn $font -nb $nb -sb $sb -l $lines -bw $border_width -h $line_height -p $prompt" 
+line_height=19
+prompt="Exit"
+DMENU="dmenu -r -i -x 590 -y 300 -z 200 -fn $font -nb $nb -sb $sb -l $lines -bw $border_width -h $line_height" 
 
 
 ### MAIN-FUNCTION ###
@@ -31,8 +31,6 @@ main() {
         Lock)
             sleep 0.15
             lock;;
-        *)
-            dunstify "Exit menu" "input error" -i $HOME/Icons/user.png -u low
     esac
 }
 

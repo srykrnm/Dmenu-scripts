@@ -2,14 +2,16 @@
 
 ### VARIABLES ###
 
-font="SourceCodeVF:style=Semibold:pixelsize=12:antialias=true"
+font="SourceCodeVF:style=Semibold:pixelsize=13:antialias=true"
+font_1="SourceCodeVF:style=Semibold:pixelsize=11.5:antialias=true"
 nb="black"
 sb="#646464"
-lines=10
+lines=20
 border_width=2
-line_height=20
-prompt="Kill-Programs"
-DMENU="dmenu -i -fn $font -nb $nb -sb $sb -l $lines -bw $border_width -h $line_height -p $prompt"
+line_height=19
+prompt="Kill?"
+DMENU="dmenu -r -i -x 500 -y 200 -z 400 -fn $font -nb $nb -sb $sb -l $lines -bw $border_width -p $prompt"
+DMENU_1="dmenu -r -i -fn $font_1 -nb $nb -sb $sb -p 'kill?-(Yes/No)' -h $line_height"
 
 ### MAIN-FUNCTION ###
 
@@ -17,7 +19,7 @@ main() {
     selected_with_pid=`ps -a -u $USER | $DMENU` 
     if [ ! -z "$selected_with_pid" ]; then
         selected=`echo $selected_with_pid | awk '{print $2}'`
-        answer=`echo -e "Yes\nNo" | $@`
+        answer=`echo -e "Yes\nNo" | $DMENU_1`
         if [ "$answer" == "Yes" ]; then
             selpid="$(awk '{print $1}' <<< $selected_with_pid)";
             kill -9 $selpid

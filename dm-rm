@@ -2,14 +2,14 @@
 
 ### VARIABLES ###
 
-font="SourceCodeVF:style=Semibold:pixelsize=12:antialias=true"
+font="SourceCodeVF:style=Semibold:pixelsize=11.5:antialias=true"
 nb="black"
 sb="#646464"
-lines=10
-border_width=2
-line_height=20
+lines=0
+border_width=0
+line_height=19
 prompt="Removable-Disks"
-DMENU="dmenu -i -fn $font -nb $nb -sb $sb -l $lines -bw $border_width -h $line_height -p $prompt"
+DMENU="dmenu -r -i -fn $font -nb $nb -sb $sb -l $lines -bw $border_width -p $prompt -h $line_height "
 usb_port_count=3
 
 ### MAIN-FUNCTION ###

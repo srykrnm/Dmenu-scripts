@@ -2,16 +2,17 @@
 
 ### VARIABLES ###
 
-font="SourceCodeVF:style=Semibold:pixelsize=12:antialias=true"
+font="SourceCodeVF:style=Semibold:pixelsize=13:antialias=true"
 nb="black"
 sb="#646464"
-lines=10
+lines=20
 border_width=2
-line_height=20
-prompt="Filebrowser"
-DMENU="dmenu -i -fn $font -nb $nb -sb $sb -l $lines -bw $border_width -h $line_height -p $prompt"
+line_height=0
+prompt="Files"
+command_="ls -A"
+DMENU="dmenu -r -x 480 -y 200 -z 400 -i -fn $font -nb $nb -sb $sb -l $lines -bw $border_width -p $prompt"
 
-### MAIN-FUNSTION ###
+### MAIN-FUNCTION ###
 
 main() {
     while :
