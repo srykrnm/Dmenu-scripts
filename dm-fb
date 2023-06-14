@@ -10,7 +10,7 @@ border_width=2
 line_height=0
 prompt="Files"
 command_="ls -A"
-DMENU="dmenu -r -x 480 -y 200 -z 400 -i -fn $font -nb $nb -sb $sb -l $lines -bw $border_width -p $prompt"
+DMENU="dmenu -cn -r -x 480 -y 200 -z 400 -i -fn $font -nb $nb -sb $sb -l $lines -bw $border_width -p $prompt"
 
 ### MAIN-FUNCTION ###
 

@@ -9,7 +9,7 @@ lines=0
 border_width=0
 line_height=19
 prompt="Executables"
-DMENU="dmenu -r -i -fn $font -nb $nb -sb $sb -l  $lines -bw $border_width -p $prompt -h $line_height "
+DMENU="dmenu -cn -r -i -fn $font -nb $nb -sb $sb -l  $lines -bw $border_width -p $prompt -h $line_height "
 
 ### MAIN-FUNCTION ###
 

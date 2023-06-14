@@ -10,7 +10,7 @@ lines=20
 border_width=2
 line_height=19
 prompt="Kill?"
-DMENU="dmenu -r -i -x 500 -y 200 -z 400 -fn $font -nb $nb -sb $sb -l $lines -bw $border_width -p $prompt"
+DMENU="dmenu -cn -r -i -x 500 -y 200 -z 400 -fn $font -nb $nb -sb $sb -l $lines -bw $border_width -p $prompt"
 DMENU_1="dmenu -r -i -fn $font_1 -nb $nb -sb $sb -p 'kill?-(Yes/No)' -h $line_height"
 
 ### MAIN-FUNCTION ###
