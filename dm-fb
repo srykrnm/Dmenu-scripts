@@ -10,21 +10,51 @@ border_width=2
 line_height=0
 prompt="Files"
 command_="ls -A"
-DMENU="dmenu -cn -r -x 480 -y 200 -z 400 -i -fn $font -nb $nb -sb $sb -l $lines -bw $border_width -p $prompt"
+DMENU="dmenu -r -cn -x 480 -y 200 -z 400 -i -fn $font -nb $nb -sb $sb -l $lines -bw $border_width -p $prompt"
 
 ### MAIN-FUNCTION ###
 
 main() {
-    while :
+   while :
     do
-	    input=`ls -A | $DMENU`
-	    len_of_input=${#input}
-	    if [ "$len_of_input" == 0 ]; then exit 0; fi
-		if [ "`file $input -b | awk '{ print $1 }'`" == symbolic ]; then path=`file $input -b | awk '{ print $4 }'`;
-        else path=`pwd`/$input; fi
-		if [ -d "$path" ]; then cd $input;
-		elif [ -f "$path" ]; then xdg-open "$path";
-	    else break; fi
+        contents=()
+        if [ $PWD != '/' ]; then contents+=("<--"); fi
+        while IFS= read -r line;
+        do
+            contents+=("$line")
+        done < <(ls -A)
+        input=`printf "%s\n" "${contents[@]}" | $DMENU`
+        len_of_input=${#input}
+        if [ "$len_of_input" == 0 ]; then exit 0; fi
+        if [ "$input" == '<--' ]; then cd ..; continue; fi
+        if [ -L "$input" ]; then
+            path=$(readlink -f "$input")
+        else
+            path=$(realpath "$input")
+        fi
+        if [ -d "$path" ]; then
+            cd "$input"
+        elif [ -f "$path" ]; then
+            mimetype=$(file -b --mime-type "$path")
+            case "$mimetype" in
+                "text/"*)
+                    st -e vim "$path";;
+                "application/pdf")
+                    zathura "$path";;
+                "image/"*)
+                    feh "$path" ;;
+                "video/"*)
+                    vlc "$path";;
+                "audio/"*)
+                    audacious "$path"
+                    ;;
+                *)
+                    echo "No application set for opening $input"
+                    ;;
+            esac
+        else
+            break
+        fi
     done
 }
 
@@ -33,3 +63,4 @@ main() {
 main
 
 ### END ###
+

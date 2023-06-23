@@ -9,7 +9,8 @@ lines=0
 border_width=0
 line_height=19
 prompt="Workspaces-nav"
-DMENU="dmenu -r -i -fn $font -nb $nb -sb $sb -l $lines -bw $border_width -p $prompt -h $line_height "
+ind=`wmctrl -d | grep '*' | awk '{print $1}'`
+DMENU="dmenu -n $ind -r -i -fn $font -nb $nb -sb $sb -l $lines -bw $border_width -p $prompt -h $line_height "
 
 ### MAIN-FUNCTION ###
 

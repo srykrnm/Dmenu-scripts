@@ -1,0 +1,101 @@
+#!/bin/bash
+
+### VARIABLES ###
+
+font="SourceCodeVF:style=Semibold:pixelsize=13:antialias=true"
+nb="black"
+sb="#646464"
+lines=20
+border_width=2
+line_height=0
+prompt="Apps: "
+DMENU="dmenu -cn -r -x 480 -y 200 -z 400 -i -fn $font -nb $nb -sb $sb -l $lines -bw $border_width -p $prompt"
+data_file="$HOME/.cache/dm-drun.data"
+
+### MAIN-FUNCTIONS ###
+
+collect_desktop_files() {
+  desktop_files=$(find /usr/share/applications ~/.local/share/applications -name '*.desktop')
+
+  > "$data_file"
+
+  for file in $desktop_files; do
+    no_dis=$(grep -m 1 'NoDisplay=' "$file" | cut -d '=' -f 2)
+    if [ "$no_dis" != 'true' ]; then
+      name=$(grep -m 1 'Name=' "$file" | cut -d '=' -f 2)
+      echo "$name:$file" >> "$data_file"
+    fi
+  done
+
+  echo "Desktop files collected and saved in $data_file."
+}
+
+display_and_execute_programs() {
+
+  if [ ! -f "$data_file" ]; then
+      collect_desktop_files
+  fi
+
+  declare -a desktop_names
+  declare -a desktop_paths
+
+  while IFS=':' read -r name path; do
+    desktop_names+=("$name")
+    desktop_paths+=("$path")
+  done < "$data_file"
+
+  if [ "${#desktop_names[@]}" == 0 ]; then
+    echo "No desktop files found."
+    exit 0
+  fi
+
+  selected_name=$(printf "%s\n" "${desktop_names[@]}" | $DMENU)
+
+  if [ -z "$selected_name" ]; then
+    exit 0
+  fi
+
+  selected_index=-1
+  for i in "${!desktop_names[@]}"; do
+    if [ "${desktop_names[$i]}" = "$selected_name" ]; then
+      selected_index=$i
+      break
+    fi
+  done
+
+  if [ "$selected_index" = -1 ]; then
+    echo "Selected name not found in desktop names array."
+    exit 1
+  fi
+
+  selected_file="${desktop_paths[$selected_index]}"
+  echo "Selected file: $selected_file"
+
+  exec_=$(grep -m 1 'Exec=' "$selected_file" | cut -d '=' -f 2)
+  term=$(grep -m 1 'Terminal=' "$selected_file" | cut -d '=' -f 2)
+
+  if [ "$term" == 'true' ]; then
+    st -e $exec_
+  else
+    $exec_
+  fi
+
+  echo "$exec_"
+}
+
+### MAIN ###
+
+if [ $# -eq 0 ]; then
+    display_and_execute_programs
+fi
+
+while getopts "ce" flag; do
+  case $flag in
+    c) collect_desktop_files ;;
+    e) display_and_execute_programs ;;
+    *) echo "Unknown flag: $flag"; exit 1 ;;
+  esac
+done
+
+### END ###
+
